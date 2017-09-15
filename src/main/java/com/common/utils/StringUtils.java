@@ -57,6 +57,15 @@ public class StringUtils {
         return "";
     }
 
+    //判断是否数字
+    public static boolean isNumeric(String str){
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if( !isNum.matches() ){
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 替换字符串对象中的空格&nbsp，回车\n br,tab键
