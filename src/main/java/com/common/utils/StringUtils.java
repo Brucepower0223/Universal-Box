@@ -3,6 +3,8 @@ package com.common.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,11 +59,16 @@ public class StringUtils {
         return "";
     }
 
-    //判断是否数字
-    public static boolean isNumeric(String str){
+    /**
+     * 判断字符串是否纯数字
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
-        if( !isNum.matches() ){
+        if (!isNum.matches()) {
             return false;
         }
         return true;
@@ -90,6 +97,7 @@ public class StringUtils {
 
     /**
      * 将list转换为如下形式 &key1=value1&key1=value2
+     *
      * @param lst
      * @param key
      * @return
@@ -107,6 +115,7 @@ public class StringUtils {
 
     /**
      * 反转字符串
+     *
      * @param str
      * @return
      */
@@ -139,6 +148,7 @@ public class StringUtils {
 
     /**
      * 是否包含特殊字符
+     *
      * @param str
      * @return
      */
@@ -151,6 +161,7 @@ public class StringUtils {
 
     /**
      * 通過字符串轉換成KB流量
+     *
      * @param str
      * @return
      */
@@ -189,5 +200,15 @@ public class StringUtils {
         return count;
     }
 
+    /**
+     * 字符串转换为流
+     *
+     * @param input
+     * @return
+     */
+    public static InputStream toInputStream(String input) {
+        byte[] bytes = input.getBytes();
+        return new ByteArrayInputStream(bytes);
+    }
 
 }

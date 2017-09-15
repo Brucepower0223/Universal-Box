@@ -15,9 +15,11 @@ public class WebClientUtils {
     public static WebClient getWebClient() {
         return getWebClient(false);
     }
+
     /**
      * 未加载JS，需要加载JS可以得到webclient对象后重新设置，通过配置文件判断是否需要使用代理
-     * @param proxyFlag  client是否需要代理
+     *
+     * @param proxyFlag client是否需要代理
      * @return
      */
     public static WebClient getWebClient(boolean proxyFlag) {
@@ -43,6 +45,7 @@ public class WebClientUtils {
 
     /**
      * 使用webclient方式获取页面对象：返回结果可能为null
+     *
      * @param url
      * @param wc
      * @return
@@ -74,6 +77,7 @@ public class WebClientUtils {
 
     /**
      * 访问页面，可重复次数
+     *
      * @param request
      * @param client
      * @return

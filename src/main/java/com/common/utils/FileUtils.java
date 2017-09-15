@@ -24,6 +24,7 @@ public class FileUtils {
 
     /**
      * 递归创建文件
+     *
      * @param filePath
      */
     public static void createNewFile(String filePath) {
@@ -46,6 +47,7 @@ public class FileUtils {
 
     /**
      * 递归创建文件夹
+     *
      * @param file
      */
     public static void newFolder(File file) {
@@ -84,6 +86,7 @@ public class FileUtils {
 
     /**
      * 创建文件夹
+     *
      * @param foldParh
      */
     public static void createFolder(String foldParh) {
@@ -120,6 +123,7 @@ public class FileUtils {
 
     /**
      * 删除文件
+     *
      * @param filePathAndName
      */
     public static void delFile(String filePathAndName) {
@@ -207,12 +211,8 @@ public class FileUtils {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (inStream != null) {
-                        inStream.close();
-                    }
-                    if (fs != null) {
-                        fs.close();
-                    }
+                    IOUtils.releaseResource(inStream);
+                    IOUtils.releaseResource(fs);
                 }
             }
         } catch (Exception e) {
@@ -292,7 +292,6 @@ public class FileUtils {
         try {
             doc = Jsoup.parse(file, "UTF-8");
         } catch (IOException e) {
-
             e.printStackTrace();
         }
         return doc;
@@ -316,6 +315,7 @@ public class FileUtils {
 
     /**
      * 读文件，返回字符串
+     *
      * @param path
      * @return
      */
@@ -335,25 +335,16 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (inputstream != null) {
-                    inputstream.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            IOUtils.releaseResource(inputstream);
+            IOUtils.releaseResource(stream);
+            IOUtils.releaseResource(reader);
         }
         return laststr;
     }
 
     /**
      * 读取文件内容 线程安全
+     *
      * @param file
      * @return
      */
@@ -378,18 +369,9 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (stream != null) {
-                    stream.close();
-                }
-                if (isr != null) {
-                    isr.close();
-                }
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e1) {
-            }
+            IOUtils.releaseResource(stream);
+            IOUtils.releaseResource(isr);
+            IOUtils.releaseResource(reader);
         }
         return context;
     }
@@ -447,6 +429,7 @@ public class FileUtils {
 
     /**
      * 计算文件或者文件夹的大小 ，单位 MB
+     *
      * @param file 要计算的文件或者文件夹 ， 类型：java.io.File
      * @return 大小，单位：MB
      */
@@ -514,19 +497,9 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (isr != null) {
-                    isr.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            IOUtils.releaseResource(isr);
+            IOUtils.releaseResource(reader);
+            IOUtils.releaseResource(stream);
         }
 
         return returnList;
@@ -542,6 +515,7 @@ public class FileUtils {
 
     /**
      * 增加同步处理，为了线程安全，原来多线程同时操作会操作有问题.
+     *
      * @param fileRootPath
      * @param successSeedList
      * @throws Exception
@@ -582,18 +556,9 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (isr != null) {
-                    isr.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e1) {
-            }
+            IOUtils.releaseResource(isr);
+            IOUtils.releaseResource(reader);
+            IOUtils.releaseResource(stream);
         }
         return jsonStr.toString();
     }
@@ -629,15 +594,7 @@ public class FileUtils {
                     } catch (Exception e) {
                         logger.info(e.getMessage(), e);
                     } finally {
-                        if (null == fos) {
-                            return;
-                        }
-
-                        try {
-                            fos.close();
-                        } catch (Exception e) {
-                            logger.error("关闭OutputStream失败", e);
-                        }
+                        IOUtils.releaseResource(fos);
                     }
                 }
             });
@@ -658,15 +615,7 @@ public class FileUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        if (null == fos) {
-                            return;
-                        }
-
-                        try {
-                            fos.close();
-                        } catch (Exception e) {
-                            logger.error("关闭OutputStream失败", e);
-                        }
+                        IOUtils.releaseResource(fos);
                     }
                 }
             });
@@ -696,7 +645,7 @@ public class FileUtils {
                                 bw.newLine();
                             }
                         }
-                        bw.close();
+                        IOUtils.releaseResource(bw);
                     } catch (IOException e) {
 
                         e.printStackTrace();
@@ -732,24 +681,16 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (isr != null) {
-                    isr.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e1) {
-            }
+            IOUtils.releaseResource(isr);
+            IOUtils.releaseResource(stream);
+            IOUtils.releaseResource(reader);
         }
         return list;
     }
 
     /**
      * 递归创建文件夹
+     *
      * @param filePath
      */
     public static void createNewFolder(String filePath) {
@@ -764,7 +705,6 @@ public class FileUtils {
                 }
                 file.mkdir();
             }
-
         } catch (Exception e) {
             logger.info("新建目录操作出错");
             e.printStackTrace();

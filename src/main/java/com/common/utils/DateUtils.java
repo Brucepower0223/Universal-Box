@@ -17,6 +17,7 @@ public class DateUtils {
 
     /**
      * 获取当前日期的字符串格式
+     *
      * @param format:返回时间的格式
      * @return
      */
@@ -28,6 +29,7 @@ public class DateUtils {
 
     /**
      * 获取小时
+     *
      * @return
      */
     public static int getCurrentHour() {
@@ -50,6 +52,7 @@ public class DateUtils {
 
     /**
      * 得到二个日期间的间隔天数 sj1>sj2 返回正数
+     *
      * @param sj1
      * @param sj2
      * @param format 传入的时间格式
@@ -72,11 +75,12 @@ public class DateUtils {
 
     /**
      * 比较两个日期传入的大小
+     *
      * @param d1
      * @param d2
      * @return
      */
-    public static int compareDate(Date d1,Date d2){
+    public static int compareDate(Date d1, Date d2) {
         if (d1.getTime() > d2.getTime()) {
             return 1;
         } else if (d1.getTime() < d2.getTime()) {
@@ -85,7 +89,9 @@ public class DateUtils {
             return 0;
         }
     }
+
     /**
+     * 计算给定时间的时间差
      * @param startTime
      * @param endTime
      * @param type      1:计算差多少天  2:计算差多少天 3:计算差多少分钟 4:计算差多少秒

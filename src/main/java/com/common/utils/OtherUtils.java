@@ -36,6 +36,7 @@ public class OtherUtils {
 
     /**
      * MD5加密算法
+     *
      * @param str
      * @return
      */
