@@ -10,7 +10,7 @@ import java.io.*;
  * Created by Bruce on 2017/9/15.
  */
 public class IOUtils {
-    private static final Log logger = LogFactory.getLog(NetworkUtils.class);
+    private static final Log logger = LogFactory.getLog(IOUtils.class);
 
     /**
      * 释放资源
