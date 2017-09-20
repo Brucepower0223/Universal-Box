@@ -1,12 +1,14 @@
 package com.whut.crawler;
 
 import com.common.utils.FileUtils;
+import com.common.utils.StringUtils;
 import com.common.utils.WebClientUtils;
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.whut.entiry.KuBao;
+import com.whut.entiry.TaskEntity;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -21,6 +23,8 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * 从酷安上抓取App信息
@@ -32,6 +36,8 @@ public class AppInfoCrawler {
     static {
         webClient = WebClientUtils.getWebClient();
     }
+
+    public static BlockingQueue<TaskEntity> taskQuene = new LinkedBlockingQueue<TaskEntity>();
 
     public static String domain = "https://www.coolapk.com";
 
@@ -197,8 +203,10 @@ public class AppInfoCrawler {
                 try {
                     url = domain + a.attr("href");
                     appName = a.select("p[class=list_app_title]").text();
+                    System.out.println("抓取"+ appName + "---->" + url);
+                    System.out.println();
                     if (appName.contains(":")) {
-                        appName.replace(":", "");
+                        appName = StringUtils.replaceKeyTab(appName).replace(":", "");
                     }
                     WebRequest webRequest1 = new WebRequest(new URL(url), HttpMethod.GET);
                     Page appPage = WebClientUtils.getWebRequestPage(webRequest1, webClient);
