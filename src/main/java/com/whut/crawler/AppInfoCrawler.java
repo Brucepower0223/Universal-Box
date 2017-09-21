@@ -78,7 +78,7 @@ public class AppInfoCrawler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        parseData();
+        //parseData();
     }
 
     /**
@@ -149,6 +149,8 @@ public class AppInfoCrawler {
         saveToExcel(kubaos);
     }
 
+
+    public static String s[] = new String[]{"应用市场名称", "一级分类", "二级分类", "app名称", "app介绍文字详情"};
     /**
      * 创建excel表头
      *
@@ -203,8 +205,6 @@ public class AppInfoCrawler {
         }
 
     }
-
-    public static String s[] = new String[]{"应用市场名称", "一级分类", "二级分类", "app名称", "app介绍文字详情"};
 
     /**
      * 抓取App页面的信息
@@ -287,10 +287,6 @@ public class AppInfoCrawler {
                     task.setUrl(url);
                     task.setAppName(appName);
                     taskQuene.put(task);
-//                    WebRequest webRequest1 = new WebRequest(new URL(url), HttpMethod.GET);
-//                    Page appPage = WebClientUtils.getWebRequestPage(webRequest1, webClient);
-//                    FileUtils.saveToFile("g:/apps/" + firstCategory + "/" + secondCategory + "/" + appName + ".html",
-//                            appPage.getWebResponse().getContentAsString());
                 } catch (Exception e) {
                     System.out.println(appName + "抓取出错");
                 }
