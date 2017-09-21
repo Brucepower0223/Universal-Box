@@ -2,6 +2,8 @@ package com.common.utils;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 模拟浏览器工具类
@@ -9,8 +11,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public class WebClientUtils {
 
+    private static final Log log = LogFactory.getLog(WebClientUtils.class);
 
-    private static final int ERRORNUM = 10;
+    private static final int ERRORNUM = 2;
 
     public static WebClient getWebClient() {
         return getWebClient(false);
@@ -92,7 +95,6 @@ public class WebClientUtils {
                 page = client.getPage(request);
                 Thread.sleep(2000);
             } catch (Exception e) {
-                System.out.println("代码异常: 访问页面出错");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
