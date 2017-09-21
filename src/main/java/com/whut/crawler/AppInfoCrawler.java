@@ -24,6 +24,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -37,48 +39,121 @@ public class AppInfoCrawler {
         webClient = WebClientUtils.getWebClient();
     }
 
+    /**
+     * 任务队列
+     */
     public static BlockingQueue<TaskEntity> taskQuene = new LinkedBlockingQueue<TaskEntity>();
+    public static ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
     public static String domain = "https://www.coolapk.com";
 
     public static WebClient webClient;
 
     public static void main(String[] args) {
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    crawlerData();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        t1.start();
         try {
-            crawlerData();
+            for (int i = 0; i < 10; i++) {
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        while (true) {
+                            TaskEntity task = getTaskFromQuene();
+                            if (task != null) {
+                                crawlerData(task);
+                            }
+                        }
+                    }
+                });
+                threadPool.execute(t);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // parseData();
+        parseData();
+    }
+
+    /**
+     * 通过拿到的任务抓取结果
+     *
+     * @param task
+     */
+    public static void crawlerData(TaskEntity task) {
+        try {
+            System.out.println(Thread.currentThread().getName() + ":抓取" + task.getAppName() + "---->" + task.getUrl());
+            System.out.println();
+            WebRequest webRequest1 = new WebRequest(new URL(task.getUrl()), HttpMethod.GET);
+            Page appPage = WebClientUtils.getWebRequestPage(webRequest1, webClient);
+            FileUtils.saveToFile("g:/apps01/" + task.getFirst() + "/" + task.getSecond() + "/" + task.getAppName() + ".html",
+                    appPage.getWebResponse().getContentAsString());
+        } catch (Exception e) {
+            System.out.println(task.getAppName() + "抓取出错");
+        }
+    }
+
+    /**
+     * 从任务队列获取任务
+     *
+     * @return
+     */
+    public static TaskEntity getTaskFromQuene() {
+        try {
+            return taskQuene.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
      * 解析data
      */
     public static void parseData() {
-        File file = new File("");
+        File file = new File("g:/apps01");
         List<KuBao> kubaos = new ArrayList<KuBao>();
         for (File f : file.listFiles()) {
-            for (File f1 : f.listFiles()) {
-                KuBao kubao = new KuBao();
-                Document document = Jsoup.parse(FileUtils.readFileContent(f1.getAbsolutePath()));
-                String domain = "应用分类";
-                String first = f1.getParentFile().getParentFile().getName();
-                String second = f1.getParentFile().getName();
-                String appName = document.select("p[class=detail_app_title]").text();
-                String introduction = document.select("div[class=apk_left_title_info]").text();
-                kubao.setDomain(domain);
-                kubao.setFirst(first);
-                kubao.setSecond(second);
-                kubao.setAppName(appName);
-                kubao.setIntroduction(introduction);
-                kubaos.add(kubao);
+            for (File f2 : f.listFiles()) {
+                for (File f1 : f2.listFiles()) {
+                    try {
+                        if (!f1.isDirectory()) {
+                            KuBao kubao = new KuBao();
+                            Document document = Jsoup.parse(FileUtils.readFileContent(f1.getAbsolutePath()));
+                            String domain = "应用分类";
+                            String first = f1.getParentFile().getParentFile().getName();
+                            String second = f1.getParentFile().getName();
+                            String appName = document.select("p[class=detail_app_title]").text();
+                            String introduction = document.select("div[class=apk_left_title_info]").text();
+                            kubao.setDomain(domain);
+                            kubao.setFirst(first);
+                            kubao.setSecond(second);
+                            kubao.setAppName(appName);
+                            kubao.setIntroduction(introduction);
+                            kubaos.add(kubao);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("解析" + f.getAbsolutePath() + "出错");
+                    }
+                }
             }
         }
 
         saveToExcel(kubaos);
     }
 
+    /**
+     * 创建excel表头
+     *
+     * @param sheet
+     */
     private static void createRowHeader(XSSFSheet sheet) {
         XSSFRow row = sheet.createRow(0);
         for (int i = 0; i < s.length; i++) {
@@ -88,7 +163,7 @@ public class AppInfoCrawler {
     }
 
     private static void saveToExcel(List<KuBao> lists) {
-        String outputPath = "d:/output1121.xlsx";
+        String outputPath = "e:/output1121.xlsx";
         FileOutputStream out = null;
         try {
             XSSFWorkbook workBook = new XSSFWorkbook();
@@ -107,10 +182,10 @@ public class AppInfoCrawler {
                     cell.setCellValue(kubao.getSecond());
 
 
-                    cell = row.createCell(4);
+                    cell = row.createCell(3);
                     cell.setCellValue(kubao.getAppName());
 
-                    cell = row.createCell(5);
+                    cell = row.createCell(4);
                     cell.setCellValue(kubao.getIntroduction());
                 }
             }
@@ -203,15 +278,19 @@ public class AppInfoCrawler {
                 try {
                     url = domain + a.attr("href");
                     appName = a.select("p[class=list_app_title]").text();
-                    System.out.println("抓取"+ appName + "---->" + url);
-                    System.out.println();
                     if (appName.contains(":")) {
                         appName = StringUtils.replaceKeyTab(appName).replace(":", "");
                     }
-                    WebRequest webRequest1 = new WebRequest(new URL(url), HttpMethod.GET);
-                    Page appPage = WebClientUtils.getWebRequestPage(webRequest1, webClient);
-                    FileUtils.saveToFile("g:/apps/" + firstCategory + "/" + secondCategory + "/" + appName + ".html",
-                            appPage.getWebResponse().getContentAsString());
+                    TaskEntity task = new TaskEntity();
+                    task.setFirst(firstCategory);
+                    task.setSecond(secondCategory);
+                    task.setUrl(url);
+                    task.setAppName(appName);
+                    taskQuene.put(task);
+//                    WebRequest webRequest1 = new WebRequest(new URL(url), HttpMethod.GET);
+//                    Page appPage = WebClientUtils.getWebRequestPage(webRequest1, webClient);
+//                    FileUtils.saveToFile("g:/apps/" + firstCategory + "/" + secondCategory + "/" + appName + ".html",
+//                            appPage.getWebResponse().getContentAsString());
                 } catch (Exception e) {
                     System.out.println(appName + "抓取出错");
                 }
