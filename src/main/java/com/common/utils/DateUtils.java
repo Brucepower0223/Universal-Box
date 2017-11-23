@@ -3,6 +3,8 @@ package com.common.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -14,6 +16,36 @@ import java.util.TimeZone;
 public class DateUtils {
 
     private static final Log logger = LogFactory.getLog(DateUtils.class);
+
+
+    public static final String DATETIME_PATTERN_TWO = "yyyy-MM-dd HH:mm:ss";
+
+    public static Date formatDateString(String dateString, String datePattern) throws ParseException {
+        DateFormat df = new SimpleDateFormat(datePattern);
+        return df.parse(dateString);
+    }
+
+    /**
+     * 将日期转换成指定格式的字符串
+     * @param date
+     * @param datePattern
+     * @return
+     */
+    public static String dateToString(Date date, String datePattern) {
+        DateFormat df = new SimpleDateFormat(datePattern);
+        return df.format(date);
+    }
+    /**
+     * 将时间戳转换为指定格式
+     * @param timestamp
+     * @param datePattern
+     * @return
+     */
+    public static String formatTimestamp(Long timestamp, String datePattern) {
+        DateFormat df = new SimpleDateFormat(datePattern);
+        Date date =  new Date(timestamp);
+        return df.format(date);
+    }
 
     /**
      * 获取当前日期的字符串格式
