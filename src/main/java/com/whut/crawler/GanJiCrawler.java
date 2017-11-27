@@ -44,26 +44,6 @@ public class GanJiCrawler {
     public static List<Ganji> ganjis = new ArrayList<Ganji>();
     public static Object mutex = new Object();
 
-    public void crawlDataIndex() throws Exception {
-        WebRequest webRequest = null;
-        for (String city : GanjiCrawlerUtils.CITY_LIST) {
-            String startUrl = "http://" + city + ".ganji.com/danbaobaoxian/";
-            System.out.println("startUrl = " + startUrl);
-            webRequest = new WebRequest(new URL(startUrl), HttpMethod.GET);
-            webClient.addRequestHeader("User-Agent", GanjiCrawlerUtils.getRandomAgents());
-            Page page = WebClientUtils.getWebRequestPage(webRequest, webClient);
-            if (page != null) {
-                Document document = Jsoup.parse(page.getWebResponse().getContentAsString());
-                Elements urlEles = document.select("a[class=f14 list-info-title js_wuba_stas]");
-                for (Element urlEle : urlEles) {
-                    System.out.println("url  = " + urlEle.attr("href"));
-                    taskQuene.add(urlEle.attr("href"));
-                }
-            }
-        }
-    }
-
-
     /**
      * 从任务队列获取任务
      *
@@ -78,74 +58,17 @@ public class GanJiCrawler {
         }
     }
 
-
-    /**
-     * 爬取某一个具体公司得页面
-     *
-     * @throws Exception
-     */
-
-
-    public void crawlCompany() throws Exception {
-        Thread.sleep(2000);
-        WebClient webClient = WebClientUtils.getWebClient();
-        String url = "http:" + getTaskFromQuene();
-        //String url = "http://anshan.ganji.com/wuba_info/580129710321898685/";
-        if (StringUtils.isBlankOrNull(url)) {
-            System.out.println("The task quene is empty now...");
-        }
-
-        Page page = WebClientUtils.getHtmlPage(url, webClient);
-        Ganji ganji = parseData(page);
-        if (ganji != null) {
-            if (ganjis.size() > 1000) {
-                mutex.wait();
-            }
-            ganjis.add(ganji);
-            System.out.println(Thread.currentThread().getName() + "crawl ganji  =  " + ganji.toString());
-
-        }
-        System.out.println(Thread.currentThread().getName() + "crawl success " + ganjis.size());
-    }
-
-    public Ganji parseData(Page page) {
-        if (page == null || StringUtils.isBlankOrNull(page.getWebResponse().getContentAsString())) {
-            System.out.println(Thread.currentThread().getName() + " illegal params");
-            return null;
-        }
-        String context = page.getWebResponse().getContentAsString();
-        Document document = Jsoup.parse(context);
-        String company = document.select("h1[class=p1]").first().text();
-        String address = document.select("div[class=map]").text();
-        String phone = document.select("span[class=num phone]").text();
-        String title = "";
-        String category = "";
-        String publishTime = "";
-        String crawlTime = "";
-
-        Ganji ganji = new Ganji();
-        ganji.setCompany(company);
-        ganji.setAddress(address);
-        ganji.setPhone(phone);
-        ganji.setTitle(title);
-        ganji.setCategory(category);
-        ganji.setCrawlTime(crawlTime);
-        ganji.setPublishTime(publishTime);
-
-        return ganji;
-
-    }
-
-
     public static void main(String[] args) throws Exception {
         Thread t1 = new Thread(new ProductThread());
         t1.start();
-
 
         for (int i = 0; i < 10; i++) {
             Thread t2 = new Thread(new ConsumeThread());
             threadPool.execute(t2);
         }
+
+        Thread t3 = new Thread(new MonitorThread());
+        t3.start();
 
 
     }
