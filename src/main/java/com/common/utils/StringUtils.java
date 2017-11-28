@@ -1,7 +1,10 @@
 package com.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -16,6 +19,13 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
     private static final Log logger = LogFactory.getLog(StringUtils.class);
+
+    public static void main(String[] args) {
+        String cert = "421083199309100036";
+        cert = cert.substring(cert.length() - 6, cert.length());
+        System.out.println(cert);
+
+    }
 
     /**
      * 判断字符串的编码
@@ -57,6 +67,58 @@ public class StringUtils {
         } catch (Exception exception3) {
         }
         return "";
+    }
+
+
+    /**
+     * 根据json对象获取字符串，不存在对应key返回空字符串，防止抛出异常
+     *
+     * @param json
+     * @param key
+     * @return
+     */
+    public static String getStringByJsonWhereHave(JSONObject json, String key) {
+        try {
+            if (json != null && json.containsKey(key)) {
+                return json.getString(key);
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    /**
+     * 清除&nbsp,并去掉空格
+     *
+     * @param tdElements
+     * @param index
+     * @return
+     */
+    public static String clearNBSP(Elements tdElements, int index) {
+        try {
+            return Jsoup.parse(tdElements.get(index).toString().replace("&nbsp;", "")).text().trim();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * 验证是否为空
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isBlankOrNull(String str) {
+        if (null == str) {
+            return true;
+        }
+        return str.length() == 0;
     }
 
     /**
