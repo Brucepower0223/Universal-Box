@@ -1,4 +1,4 @@
-package com.common.utils;
+package com.common.utils.network;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
