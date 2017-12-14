@@ -1,4 +1,4 @@
-package com.common.test.zookeeper;
+package com.common.zookeeper;
 
 
 /**
@@ -9,13 +9,13 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 4; i++) {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         DistrubutedLock lock = null;
-                        lock = new BaseDistributedLock("192.168.224.132:2181", "test1");
+                        lock = new BaseDistributedLock("192.168.234.128:2181", "test1");
                         System.out.println(Thread.currentThread().getName() + "正在运行");
                         lock.acquire();
                         System.out.println(Thread.currentThread().getName() + "处理自己的业务");

@@ -22,6 +22,11 @@ public class RedisUtil {
      * @param args
      */
     public static void main(String[] args) {
+        Jedis jedis = new Jedis("192.168.234.128",6379);
+
+//        jedis.setbit()
+
+
 
     }
 

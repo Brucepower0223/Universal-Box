@@ -1,4 +1,4 @@
-package com.common.test.zookeeper;
+package com.common.zookeeper;
 
 import java.util.concurrent.TimeUnit;
 
