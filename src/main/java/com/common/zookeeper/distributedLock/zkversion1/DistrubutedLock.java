@@ -1,4 +1,4 @@
-package com.common.zookeeper;
+package com.common.zookeeper.distributedLock.zkversion1;
 
 import java.util.concurrent.TimeUnit;
 

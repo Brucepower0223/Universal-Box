@@ -1,4 +1,4 @@
-package com.common.zookeeper;
+package com.common.zookeeper.distributedLock.zkversion1;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -20,7 +20,7 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
     private String waitLock;
     private String currentLock;
 
-    private int sessionTimeout = 30000;
+    private int sessionTimeout = 100000000;
     private Object mutex = new Object();
 
     public static volatile boolean isDisconnect = false;
@@ -33,6 +33,7 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
     public BaseDistributedLock(String config, String lockName) {
         try {
             client = new ZooKeeper(config, sessionTimeout, this);
+            Thread.sleep(1000);
             Stat exists = client.exists(LOCK_ROOT, false);
             if (exists == null) {
                 client.create(LOCK_ROOT, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
