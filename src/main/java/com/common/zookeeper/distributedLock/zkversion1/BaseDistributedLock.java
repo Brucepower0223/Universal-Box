@@ -43,7 +43,7 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
                 client.create(LOCK_ROOT, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            client = null;
         }
     }
 
@@ -57,18 +57,11 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
         }
         //建立连接后，才能进行create exist等操作
         if (watchedEvent.getState() == Event.KeeperState.SyncConnected && watchedEvent.getType() != Event.EventType.NodeDeleted) {
-            num++;
-            System.out.println("num = " + num);
             connectedSignal.countDown();
             return;
         }
     }
 
-
-    @Override
-    public boolean acquire(long time, TimeUnit unit) throws Exception {
-        return false;
-    }
 
     @Override
     public void acquire() throws Exception {
@@ -122,6 +115,8 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
     @Override
     public void release() throws Exception {
         //删除节点
+        num++;
+        System.out.println("num = " + num);
         client.delete(LOCK_ROOT + "/" + currentLock, -1);
     }
 }
