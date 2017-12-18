@@ -6,7 +6,6 @@ import org.apache.zookeeper.data.Stat;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Bruce
@@ -118,5 +117,6 @@ public class BaseDistributedLock implements Watcher, DistrubutedLock {
         num++;
         System.out.println("num = " + num);
         client.delete(LOCK_ROOT + "/" + currentLock, -1);
+        client.close();
     }
 }
