@@ -1,4 +1,4 @@
-package com.common.zookeeper.distributedLock.zkversion1;
+package com.common.distributedLock.zkversion;
 
 
 /**

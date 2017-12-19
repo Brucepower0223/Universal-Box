@@ -1,4 +1,4 @@
-package com.common.zookeeper.distributedLock.zkversion1;
+package com.common.distributedLock.zkversion;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * 基于zk的分布式锁的实现
+ *
  * @author Bruce
  * @date 2017/11/23
  */

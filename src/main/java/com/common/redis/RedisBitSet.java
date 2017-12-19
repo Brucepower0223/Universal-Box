@@ -18,7 +18,7 @@ public class RedisBitSet {
 
     }
 
-    public RedisBitSet(Jedis jedisCluster, String name) {
+    public RedisBitSet(Jedis jedis, String name) {
         this.jedis = jedis;
         this.name = name;
     }
