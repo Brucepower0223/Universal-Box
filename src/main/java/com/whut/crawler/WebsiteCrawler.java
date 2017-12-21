@@ -1,8 +1,9 @@
 package com.whut.crawler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.common.utils.FileUtils;
+import com.common.utils.StringUtils;
 import com.common.utils.WebClientUtils;
+import com.common.utils.file.FileUtils;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -17,10 +18,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 抓取网站排行的信息
@@ -227,8 +225,14 @@ class Parser {
                     cell = row.createCell(3);
                     cell.setCellValue(website.getWebsite());
 
+
                     cell = row.createCell(4);
-                    cell.setCellValue(website.getRank());
+                    if (website.getRank() != 0) {
+                        cell.setCellValue(website.getRank());
+                    } else {
+                        cell.setCellValue("---");
+                    }
+
                 }
             }
 
@@ -245,6 +249,8 @@ class Parser {
         }
 
     }
+
+    Map<Integer, String> cache = new HashMap<Integer, String>();
 
     public void parserData() {
         String prefix = "www.";
@@ -280,7 +286,21 @@ class Parser {
                                 entity.setFirst(first);
                                 entity.setSecond(second);
                                 entity.setName(name);
-                                entities.add(entity);
+                                String cacheUrl = cache.get(rankInt);
+                                if (!StringUtils.isBlankOrNull(cacheUrl)) {
+                                    if (url.length() < cacheUrl.length()) {
+                                        cache.put(new Integer(rankInt), url);
+                                        entities.add(entity);
+                                    } else {
+                                        continue;
+                                    }
+                                } else {
+                                    cache.put(new Integer(rankInt), url);
+                                    entities.add(entity);
+                                }
+                                if (rankInt == 0) {
+                                    entities.add(entity);
+                                }
                             } catch (Exception e) {
                                 System.out.println("解析" + htmlFile.getAbsolutePath() + "出错");
                                 e.printStackTrace();

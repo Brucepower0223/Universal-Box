@@ -1,6 +1,6 @@
 package com.whut.crawler;
 
-import com.common.utils.FileUtils;
+import com.common.utils.file.FileUtils;
 import com.common.utils.StringUtils;
 import com.common.utils.WebClientUtils;
 import com.gargoylesoftware.htmlunit.HttpMethod;
