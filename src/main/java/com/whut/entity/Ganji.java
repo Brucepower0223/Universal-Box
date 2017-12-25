@@ -1,4 +1,4 @@
-package com.whut.entiry;
+package com.whut.entity;
 
 /**
  * @author Bruce

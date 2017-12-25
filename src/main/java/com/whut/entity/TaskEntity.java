@@ -1,4 +1,4 @@
-package com.whut.entiry;
+package com.whut.entity;
 
 /**
  * Created by admin on 2017/9/20.
