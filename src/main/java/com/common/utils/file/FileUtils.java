@@ -1,4 +1,4 @@
-package com.common.utils;
+package com.common.utils.file;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,7 +13,9 @@ import java.util.concurrent.Executors;
 
 /**
  * 操作文件工具类
- * Created by Bruce on 2017/9/15.
+ *
+ * @author Bruce
+ * @date 2017/9/15
  * <p>
  * Java实现文件复制、剪切、删除操作,文件指文件或文件夹 文件分割符统一用"//"
  */
