@@ -573,3 +573,8 @@ var LZString = {
 function encrypt(params) {
     return LZString.compressToBase64(params);
 }
+
+
+function deEncrypt(params){
+    return LZString.decompressFromBase64(params);
+}
